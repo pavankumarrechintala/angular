@@ -1,0 +1,137 @@
+const  nodemailer = require('nodemailer');
+let transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    requireTLS: true,
+    auth: {
+        user: "getsurvunic@gmail.com",
+        pass: "getsurv@123"
+    }
+});
+let mailOptions = {
+    from: 'getsurvunic@gmail.com',
+    to: 'pogularakesh209@gmail.com',
+    subject: 'Test',
+    html:  `Greetings of the day....
+    <h1 style="font-color:blue">Welcome to GetSurv</h1>
+    <p>GetSurv is the online survey application By unicsol India Pvt Ltd.</p>
+    <p>Your User Id is <b>US_147</b></p>
+    <a href="http://localhost:4200/login">click here</a> To Login</br>
+    <p>Thanks for using GetSurv</p>
+    `,
+    
+};
+transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        return console.log(error.message);
+    }
+    console.log('success');
+});
+------------------------------------------
+
+
+router.post('/user', (req, res, next) => {
+    var fname = req.body.firstName;
+    var lname = req.body.lastName;
+    var eid = req.body.emailId
+    var pwd = req.body.password
+    var mno = req.body.mobileNo
+    var gen = req.body.gender
+    var adrs = req.body.address
+    var cntry = req.body.country;
+    var ste = req.body.state;
+    var cty = req.body.city;
+    var zcode = req.body.zipCode;
+    var typ = req.body.typeOfUser;
+    // var img = req.body.image;
+    var frname = req.body.firmName;
+    var estbyear = req.body.establishedYear;
+    var descptn = req.body.description;
+    var pfirm = req.body.parentFirm;
+    var fadrs = req.body.faddress;
+    var fcty = req.body.fcity;
+    var stte = req.body.fstate;
+    var fcntry = req.body.fcountry;
+    var zpcode = req.body.fzipCode;
+    db.any("select fn_clientAdd($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)",
+        [fname, lname, eid, pwd, mno, gen, adrs, cntry, ste, cty, zcode, typ, frname, estbyear, descptn, pfirm,
+            fadrs, fcty, stte, fcntry, zpcode]).then((data) => {
+                if(data[0].fn_clientAdd==='0'){
+                    console.log(data)
+                    res.send([{"message":"data insertion failure"}])
+                }
+                else{
+                res.send([{ "message": "inserted succesfully" }])
+                 console.log(data)
+                const nodeMailer = require('nodemailer');
+                let transporter = nodeMailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false,
+                    requireTLS: true,
+                    auth: {
+                        user: "getsurvunic@gmail.com",
+                        pass: "getsurv@123"
+                    }
+                });
+                let mailOptions = {
+                    from: 'getsurvunic@gmail.com',
+                    to: req.body.emailId,
+                    subject: 'User id of get surv',
+                    html: `Greetings of the day....
+            <h1 style="font-color:blue">Welcome to GetSurv</h1>
+            <p>GetSurv is the online survey application By unicsol India Pvt Ltd.</p>
+            <a href="http://localhost:4200/login">click here</a> To Login</br>
+            <p>Thanks for using GetSurv</p>
+            <p> your client id is : `+data[0].fn_clientadd ,
+                };
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        return console.log(error.message);
+                    }
+                    console.log('success');
+                });
+              
+                    }
+                    })
+        })
+
+
+-----------------------------------
+
+forgot password
+------------------------------------------
+
+router.get('/user/forgot/:emailid/:userid', (req, res, next) =>  {
+    var id = req.params.emailid; 
+    var ip = req.params.userid; 
+   db.any('select * from fn_forgotPwd($1,$2)', [id, ip]).then((data) =>  {
+        res.send(data)
+        var pass = data[0].pwd
+        console.log(pass)
+    const nodemailer = require('nodemailer'); 
+    let transporter = nodemailer.createTransport( {
+        host:'smtp.gmail.com', 
+        port:587, 
+        secure:false, 
+        requireTLS:true, 
+        auth: {
+            user:"getsurvunic@gmail.com", 
+            pass:"getsurv@123"
+        }
+    }); 
+    let mailOptions =  {
+        from:'getsurvunic@gmail.com', 
+        to:id, 
+        subject:'user id of get surv', 
+        text:pass
+    }; 
+    transporter.sendMail(mailOptions, (error, info) =>  {
+        if (error) {
+            return console.log(error.message); 
+        }
+        console.log('success'); 
+        }); 
+    })   
+})
